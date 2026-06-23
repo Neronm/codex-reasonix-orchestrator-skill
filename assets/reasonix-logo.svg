@@ -1,0 +1,10 @@
+<svg width="720" height="220" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="220" rx="28" fill="#F8FAFC"/>
+  <circle cx="102" cy="92" r="46" fill="#1D4ED8"/>
+  <circle cx="146" cy="124" r="26" fill="#0F766E"/>
+  <path d="M84 94H118C130.703 94 141 104.297 141 117V117C141 129.703 130.703 140 118 140H84V94Z" fill="#F8FAFC"/>
+  <path d="M84 48H116.5C131.688 48 144 60.3122 144 75.5V75.5C144 90.6878 131.688 103 116.5 103H84V48Z" fill="#F8FAFC"/>
+  <text x="198" y="98" fill="#0F172A" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700">Reasonix</text>
+  <text x="202" y="144" fill="#475569" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="600" letter-spacing="4">ORCHESTRATOR</text>
+  <text x="203" y="178" fill="#64748B" font-family="Segoe UI, Arial, sans-serif" font-size="18">Codex Brain · Reasonix Hand</text>
+</svg>

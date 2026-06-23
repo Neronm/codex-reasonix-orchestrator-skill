@@ -1,356 +1,404 @@
-# 🧠 Reasonix Orchestrator
+<p align="center">
+  <img src="assets/reasonix-logo.svg" alt="Reasonix Logo" width="360" />
+</p>
 
-这是一个给 `Codex Desktop + Reasonix CLI` 工作流准备的可复用 Skill / Plugin。
+<p align="center">
+  <img src="assets/reasonix-mascot.jpg" alt="Reasonix Mascot" width="220" />
+</p>
 
-它解决的是一个很实际的问题：
+<h1 align="center">Reasonix Orchestrator</h1>
 
-很多人希望 `Codex` 先把事情想清楚、拆清楚、讲清楚，再交给另一个执行器去真正改代码，而不是一上来就让 AI 直接动手。
+<p align="center">
+  A reusable orchestration workflow for teams that want Codex Desktop to stay the Brain and Judge, while Reasonix CLI acts as the Hand.
+</p>
 
-这套工作流就是为这个目的准备的。
+<p align="center">
+  为 <code>Codex Desktop + Reasonix CLI</code> 设计的可复用协作工作流。<br />
+  Keep planning, confirmation, and review in Codex. Delegate execution to Reasonix.
+</p>
 
-* `Codex Desktop` 负责规划、确认、验收
-* `Reasonix CLI` 负责按交接文件执行代码修改
-* 用户只需要在 `Codex Desktop` 里提需求和确认
-* Windows 用 `.\scripts\ai-hand.ps1 "<task-slug>"`，macOS / Linux 用 `./scripts/ai-hand.sh "<task-slug>"`
+<p align="center">
+  <a href="#zh-cn">简体中文</a> |
+  <a href="#en">English</a>
+</p>
 
-**如果你是第一次接触这套流程，先记住这一句话：**
+<p align="center">
+  <a href="https://github.com/Neronm/codex-reasonix-orchestrator-skill/stargazers"><img src="https://img.shields.io/github/stars/Neronm/codex-reasonix-orchestrator-skill?style=for-the-badge" alt="GitHub Stars" /></a>
+  <a href="https://github.com/Neronm/codex-reasonix-orchestrator-skill/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Neronm/codex-reasonix-orchestrator-skill?style=for-the-badge" alt="GitHub License" /></a>
+  <img src="https://img.shields.io/badge/Codex-Skill-1f6feb?style=for-the-badge" alt="Codex Skill" />
+  <img src="https://img.shields.io/badge/DeepSeek-Reasonix-0f766e?style=for-the-badge" alt="DeepSeek Reasonix" />
+  <img src="https://img.shields.io/badge/Plugin-Ready-f59e0b?style=for-the-badge" alt="Plugin Ready" />
+</p>
 
-用户只在 Codex Desktop 里提需求和确认；Codex 负责规划和验收；Reasonix 只负责按 Codex 的交接文件执行代码修改。
+---
 
-## 🧩 它到底是怎么分工的
+<a id="zh-cn"></a>
 
-你可以把它想成两个人配合干活：
+## 简体中文
 
-### 🖥️ Codex Desktop
+> 让 `Codex Desktop` 负责思考、确认、验收，让 `Reasonix CLI` 负责按合同执行代码修改。
 
-它是：
+### 🧭 快速导航
 
-* 大脑
-* 总指挥
-* 验收官
+- [🚀 项目简介](#zh-overview)
+- [✨ 功能特点](#zh-features)
+- [🗂️ 项目结构](#zh-structure)
+- [📦 安装方式](#zh-installation)
+- [🧭 使用方法](#zh-usage)
+- [🧩 Codex Skill / Plugin 说明](#zh-skill-plugin)
+- [💬 示例指令](#zh-example)
+- [❓常见问题](#zh-faq)
+- [📄 License](#zh-license)
 
-它负责：
+<a id="zh-overview"></a>
+### 🚀 项目简介
 
-* 理解你的需求
-* 把任务拆清楚
-* 生成交接文件
-* 在执行前问你要不要继续
-* 在执行后检查结果
-* 给出最终判断
+`Reasonix Orchestrator` 是一个可复用的 Codex Skill / Plugin，用来固定一套清晰的协作分工：
 
-### 🤖 Reasonix CLI
+- `Codex Desktop` 负责 `Brain / Judge / Orchestrator`
+- `Reasonix CLI` 负责 `Hand / Executor`
+- Windows 正常入口是 `.\scripts\ai-hand.ps1 "<task-slug>"`
+- macOS / Linux 正常入口是 `./scripts/ai-hand.sh "<task-slug>"`
 
-它是：
+它解决的问题很直接：很多人希望由 `Codex Desktop` 先理解需求、拆任务、生成交接文档、拿到确认，再把实际代码修改交给另一个执行器，而不是让同一个 AI 一上来就直接改代码。
 
-* 手
-* 执行者
+<a id="zh-features"></a>
+### ✨ 功能特点
 
-它负责：
+- 明确固定 `Codex Desktop` 与 `Reasonix CLI` 的职责边界。
+- 保留 `SPEC / ACCEPTANCE / REASONIX_HANDOFF` 这类可审查、可复跑的交接文件。
+- 按平台选择固定入口脚本，而不是临时换执行方式。
+- 默认保留用户确认环节，不把执行权静默下放给 Hand。
+- 提供 Skill 目录与 Plugin 打包元数据，方便复用、分发、维护。
+- 对危险操作设置安全边界，避免自动 `commit`、`push`、`reset`、`clean` 等动作。
 
-* 读取 Codex 生成的任务文件
-* 按范围修改代码
-* 运行需要的验证
-* 写出执行报告
+<a id="zh-structure"></a>
+### 🗂️ 项目结构
 
-## 👥 这套流程最适合谁
+```text
+.
+├─ assets/
+│  ├─ reasonix-mascot.jpg
+│  └─ reasonix-logo.png              # 预留 logo 路径，可后续补充
+├─ .codex-plugin/
+│  └─ plugin.json
+├─ skills/
+│  └─ reasonix-orchestrator/
+│     ├─ SKILL.md
+│     ├─ agents/
+│     ├─ references/
+│     └─ scripts/
+├─ LICENSE
+└─ README.md
+```
 
-如果你符合下面这些情况，这个项目就很适合你：
+安装到目标项目后，常见会新增这些工作流文件：
 
-* 你主要使用 `Codex Desktop`
-* 你不想让 AI 直接跳过规划就改代码
-* 你希望“谁负责想、谁负责做、谁负责验收”分得很清楚
-* 你希望任务过程有明确的 Markdown 交接文件，方便复查和重跑
-* 你想把同一套工作流复用到不同项目里
+- `AGENTS.md`
+- `.ai/tasks/README.md`
+- `.ai/prompts/reasonix-hand.md`
+- `.reasonix/system-hand.md`
+- `scripts/ai-hand.ps1`
+- `scripts/ai-hand.sh`
 
-如果你希望 `Codex Desktop` 负责规划和验收、`Reasonix CLI` 负责执行，并且中间保留明确的确认环节，那这套模式很适合你。
+<a id="zh-installation"></a>
+### 📦 安装方式
 
-如果你更想要的是“不经过交接文件、不经过确认、让同一个 AI 自己一路直接改到尾”，那这套模式可能不适合你。
+如果你只想把 Skill 装进 Codex skills 目录，最直接路径如下。
 
-## 🚀 3 分钟快速开始
-
-如果你想先跑通一遍，按下面做就可以。
-
-如果你只是想先用起来，不用先看完全部细节。
-
-1. 下载或 clone 这个仓库
-2. 把 `skills/reasonix-orchestrator/` 放到你的 Codex skills 目录
-3. 打开你真正要工作的目标项目
-4. 在 `Codex Desktop` 里让它安装这套 workflow
-5. 跑一次 smoke-test，确认流程能通
-
-macOS / Linux 用户可以直接这样安装 Skill：
+macOS / Linux:
 
 ```bash
 mkdir -p ~/.codex/skills
 cp -R ./skills/reasonix-orchestrator ~/.codex/skills/reasonix-orchestrator
+chmod +x ~/.codex/skills/reasonix-orchestrator/scripts/ai-hand.sh
 ```
 
-### 📁 Skills 目录放哪里
-
-常见位置：
-
-```text
-~/.codex/skills/reasonix-orchestrator/
-```
-
-Windows 用户通常可以理解成自己用户目录下的：
+Windows 可理解为放到用户目录下的：
 
 ```text
 .codex\skills\reasonix-orchestrator\
 ```
 
-如果你使用了自定义 `CODEX_HOME`，那就放到对应的 `skills/` 目录里。
+如果你使用自定义 `CODEX_HOME`，就放到对应的 `skills/` 目录里。
 
-macOS / Linux 目标项目首次使用前，记得给 hand 脚本执行权限：
+仓库同时包含 `.codex-plugin/plugin.json`，可作为 Plugin 打包入口继续扩展。
 
-```bash
-chmod +x scripts/ai-hand.sh
+<a id="zh-usage"></a>
+### 🧭 使用方法
+
+正常使用时，用户主要只在 `Codex Desktop` 里提需求和确认，典型流程如下：
+
+```text
+你 → Codex Desktop 规划
+  → 生成 SPEC / ACCEPTANCE / HANDOFF
+  → 你确认
+  → Codex Desktop 按系统选择 ai-hand 脚本
+  → Reasonix 执行
+  → Codex Desktop 审查
+  → PASS / REVISE / REJECT
 ```
 
-## 🛠️ 正常使用时，你只需要这样做
+最重要的工作流约束：
 
-打开 `Codex Desktop`，直接发这样的请求：
+- `Codex Desktop` 是正常的 `Brain / Judge / Orchestrator`
+- `Reasonix CLI` 是正常的 `Hand / Executor`
+- `ai-chain.ps1` 仅作为 `legacy / fallback`
+- 不使用 `codex` CLI 承担这套模式里的 `Brain / Judge`
+
+<a id="zh-skill-plugin"></a>
+### 🧩 Codex Skill / Plugin 说明
+
+这个仓库同时覆盖两层用途：
+
+- `Skill`：核心工作流定义在 [skills/reasonix-orchestrator/SKILL.md](skills/reasonix-orchestrator/SKILL.md)
+- `Plugin`：插件元数据位于 [.codex-plugin/plugin.json](.codex-plugin/plugin.json)
+
+适合这类场景：
+
+- 想让 `Codex Desktop` 负责规划、确认、验收
+- 想让 `Reasonix CLI` 只负责按交接文档执行代码修改
+- 想把这套分工固化成可复用、可审查的仓库工作流
+- 想给团队或多个项目复用同一套 orchestration contract
+
+如果你更想要的是同一个 AI 直接从头改到尾，不保留交接文件，也不保留确认环节，那这套模式可能不适合你。
+
+<a id="zh-example"></a>
+### 💬 示例指令
+
+可以直接在 `Codex Desktop` 里这样发起：
 
 ```text
 按 Codex Desktop Orchestrator 模式处理。
-
 任务名：example-task
 
 需求：这里写你的需求。
-
-请先作为 Brain 生成 SPEC / ACCEPTANCE / REASONIX_HANDOFF，展示摘要后问我是否确认交给 Reasonix 执行。
+请先作为 Brain 生成 SPEC / ACCEPTANCE / REASONIX_HANDOFF，
+展示摘要后问我是否确认交给 Reasonix 执行。
 ```
 
-如果你愿意写得更完整，也可以继续补：
+如果你愿意写得更完整，可以继续补：
 
-* 范围
-* 不要改什么
-* 验收标准
+- 范围
+- 不要改什么
+- 验收标准
 
-但对大多数人来说，上面那段模板已经够用了。
-
-## 🔁 整个流程是怎么跑的
-
-```text
-你
- ↓
-Codex Desktop 规划
- ↓
-生成 SPEC / ACCEPTANCE / HANDOFF
- ↓
-你确认
- ↓
-Codex Desktop 根据系统选择 hand 脚本
- ↓
-Reasonix 执行
- ↓
-Codex 审查
- ↓
-PASS / REVISE / REJECT
-```
-
-这里最重要的 5 条规则是：
-
-1. `Codex Desktop` 是正常的 `Brain / Judge / Orchestrator`
-2. `Reasonix CLI` 是正常的 `Hand / Executor`
-3. 正常入口按系统选择：
-
-```powershell
-.\scripts\ai-hand.ps1 "<task-slug>"
-```
-
-```bash
-./scripts/ai-hand.sh "<task-slug>"
-```
-
-4. Windows 用户确认后，Codex Desktop 调用 `.\scripts\ai-hand.ps1 "<task-slug>"`
-5. macOS / Linux 用户确认后，Codex Desktop 调用 `./scripts/ai-hand.sh "<task-slug>"`
-6. 不使用 `ai-chain.ps1` 作为正常入口
-7. 不使用 `codex` CLI 做 `Brain / Judge`
-
-## 📦 安装到目标项目后，会多出什么
-
-这套 workflow 安装到目标项目后，通常会加入这些文件：
-
-* `AGENTS.md`
-* `.ai/tasks/README.md`
-* `.ai/prompts/reasonix-hand.md`
-* `.reasonix/system-hand.md`
-* `scripts/ai-hand.ps1`
-* `scripts/ai-hand.sh`
-
-它们的作用可以简单理解成：
-
-* `AGENTS.md` 负责讲清楚谁干什么
-* `SPEC / ACCEPTANCE / HANDOFF` 负责交接任务
-* `ai-hand.ps1` / `ai-hand.sh` 负责调用 `Reasonix CLI`
-* `EXECUTION_REPORT.md` 负责记录执行结果
-
-## 🧪 Smoke Test
-
-第一次装好以后，建议先用一个很小的测试任务试跑，不要直接拿重要需求上来就跑。
-
-最简单的 smoke-test 可以这样做：
-
-1. 打开一个目标项目
-2. 在 `Codex Desktop` 里发一个很小的测试请求
-3. 确认 `Codex Desktop` 先生成：
-   * `SPEC.md`
-   * `ACCEPTANCE.md`
-   * `REASONIX_HANDOFF.md`
-4. 确认它先问你是否执行
-5. 确认执行时走的入口按系统选择：
-
-```powershell
-.\scripts\ai-hand.ps1 "<task-slug>"
-```
-
-```bash
-./scripts/ai-hand.sh "<task-slug>"
-```
-
-6. 确认 `Reasonix CLI` 执行后写出了：
-
-```text
-.ai/tasks/<task-slug>/EXECUTION_REPORT.md
-```
-
-7. 确认最后由 `Codex Desktop` 读取结果，并给出：
-
-* `PASS`
-* `REVISE`
-* `REJECT`
-
-如果你之后还想继续调整这套流程，再看后面的说明。
-
-如果你要维护或扩展这套 Skill，可以继续往下看：
-
-* [skills/reasonix-orchestrator/references/test-checklist.md](skills/reasonix-orchestrator/references/test-checklist.md)
-
-## 🔒 安全边界
+### 🔒 安全边界
 
 这套工作流默认不会自动做下面这些危险操作：
 
-* `git push`
-* `git commit`
-* `git reset --hard`
-* `git clean`
-* 删除重要文件
-* 修改 `.env`
-* 修改密钥、证书、SSH、凭据文件
-* 自动安装依赖，除非用户明确批准
+- `git push`
+- `git commit`
+- `git reset --hard`
+- `git clean`
+- 删除重要文件
+- 修改 `.env`
+- 修改密钥、证书、SSH、凭据文件
+- 未经用户明确批准自动安装依赖
 
-换句话说，它默认不会：
+换句话说，它默认不会偷偷提交代码、偷偷推远端、偷偷清工作区，也不会绕过你直接让 `Reasonix` 自己决定高风险操作。
 
-* 偷偷帮你提交代码
-* 偷偷帮你推到远端
-* 偷偷清空工作区
-* 偷偷去碰配置和凭据
-* 绕过你，直接让 `Reasonix` 自己决定怎么做
+<a id="zh-faq"></a>
+### ❓常见问题
 
-## ❓ FAQ
+#### 1. 我需要很懂 Reasonix 吗？
 
-### 🧑‍🏫 我需要会 Reasonix 吗？
+不需要。普通使用者只需要知道：真正动代码的是 `Reasonix CLI`，但主要交互入口仍然是 `Codex Desktop`。
 
-不需要很熟。
+#### 2. 为什么不直接让 Codex 改代码？
 
-普通用户只要知道一件事：真正改代码的是 `Reasonix CLI`，但你主要打交道的还是 `Codex Desktop`。
+因为这套模式强调把“先想清楚怎么做”和“真正去动代码”拆开。这样更容易审查、更容易回滚，也更容易复用同一套交接合同。
 
-### 🧠 为什么不直接让 Codex 改代码？
+#### 3. 为什么要保留 SPEC / ACCEPTANCE / HANDOFF？
 
-因为很多人更希望把“想清楚怎么做”和“真的去动代码”拆开。
+因为这些文件就是任务合同，明确：
 
-这样有几个好处：
+- 这次到底要做什么
+- 做到什么算完成
+- Reasonix 可以动哪些内容
+- 哪些内容不能碰
 
-* 先规划，后执行
-* 先确认，后落地
-* 过程更容易检查
-* 出问题更容易回滚和重跑
+#### 4. 为什么不把 `ai-chain.ps1` 当正常入口？
 
-### 📄 为什么要保留 SPEC / ACCEPTANCE / HANDOFF？
+因为这套模式要求用户确认留在 `Codex Desktop`，Brain / Judge 也留在 `Codex Desktop`。所以 `ai-chain.ps1` 只能是 `legacy / fallback`，不是主路径。
 
-因为它们就是交接合同。
+#### 5. Reasonix 改错了怎么办？
 
-这些文件能帮你明确：
+正常处理方式是让 `Codex Desktop` 给出 `REVISE` 或 `REJECT`，然后收紧 `SPEC / ACCEPTANCE / HANDOFF`，再决定是否重新执行。
 
-* 这次到底要做什么
-* 做到什么算完成
-* Reasonix 可以动哪些内容
-* 哪些内容不能碰
+#### 6. 这个 Skill 会不会自动提交或推送代码？
 
-这比“全靠聊天上下文记忆”稳得多。
+不会。默认不自动 `commit`、`push`、`reset`、`clean`。
 
-### ↩️ 为什么不使用 ai-chain.ps1？
+### 🧪 附加说明
 
-因为这套模式强调：
+首次接入建议先跑一个很小的 smoke test，不要直接拿重要需求上来跑。最简单检查项如下：
 
-* 用户确认要留在 `Codex Desktop`
-* 正常的 Brain / Judge 也要留在 `Codex Desktop`
+- `Codex Desktop` 先生成 `SPEC.md`、`ACCEPTANCE.md`、`REASONIX_HANDOFF.md`
+- 它先向你确认是否执行
+- Windows 走 `.\scripts\ai-hand.ps1 "<task-slug>"`
+- macOS / Linux 走 `./scripts/ai-hand.sh "<task-slug>"`
+- `Reasonix CLI` 执行后写出 `.ai/tasks/<task-slug>/EXECUTION_REPORT.md`
+- 最终由 `Codex Desktop` 读取结果并给出 `PASS / REVISE / REJECT`
 
-`ai-chain.ps1` 可以保留，但它不是这套工作流的正常入口，只是 `legacy / fallback`。
+如果你要继续维护或扩展这套 Skill，建议从这些入口继续看：
 
-### 🩹 Reasonix 改错了怎么办？
+- [skills/reasonix-orchestrator/SKILL.md](skills/reasonix-orchestrator/SKILL.md)
+- [skills/reasonix-orchestrator/references/workflow-details.md](skills/reasonix-orchestrator/references/workflow-details.md)
+- [skills/reasonix-orchestrator/references/file-contracts.md](skills/reasonix-orchestrator/references/file-contracts.md)
+- [skills/reasonix-orchestrator/references/reasonix-hand-contract.md](skills/reasonix-orchestrator/references/reasonix-hand-contract.md)
+- [skills/reasonix-orchestrator/references/plugin-packaging.md](skills/reasonix-orchestrator/references/plugin-packaging.md)
+- [skills/reasonix-orchestrator/references/test-checklist.md](skills/reasonix-orchestrator/references/test-checklist.md)
 
-这正是为什么最后还要让 `Codex Desktop` 来审查。
+<a id="zh-license"></a>
+### 📄 License
 
-如果改错了，正常做法是：
-
-* 由 `Codex Desktop` 给出 `REVISE` 或 `REJECT`
-* 收紧 `SPEC / ACCEPTANCE / HANDOFF`
-* 再决定是否重新执行
-
-### 🚫 这个 Skill 会不会自动提交或推送代码？
-
-不会。
-
-默认不会自动：
-
-* commit
-* push
-* reset
-* clean
-
-这些都被当成危险操作处理。
-
-## 🧑‍💻 给准备继续维护这套 Skill 的人看的入口
-
-如果你要维护或扩展这套 Skill，可以从这里继续往下看：
-
-* [skills/reasonix-orchestrator/SKILL.md](skills/reasonix-orchestrator/SKILL.md)
-* [skills/reasonix-orchestrator/references/workflow-details.md](skills/reasonix-orchestrator/references/workflow-details.md)
-* [skills/reasonix-orchestrator/references/file-contracts.md](skills/reasonix-orchestrator/references/file-contracts.md)
-* [skills/reasonix-orchestrator/references/reasonix-hand-contract.md](skills/reasonix-orchestrator/references/reasonix-hand-contract.md)
-* [skills/reasonix-orchestrator/references/plugin-packaging.md](skills/reasonix-orchestrator/references/plugin-packaging.md)
-* [skills/reasonix-orchestrator/references/test-checklist.md](skills/reasonix-orchestrator/references/test-checklist.md)
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 🌍 English
+<a id="en"></a>
 
-Reasonix Orchestrator is a reusable Codex Skill / Plugin for teams who want:
+## English
 
-* `Codex Desktop` to act as the normal `Brain / Judge / Orchestrator`
-* `Reasonix CLI` to act as the normal `Hand / Executor`
-* a fixed execution entrypoint chosen by platform:
+> Keep planning, confirmation, and review inside `Codex Desktop`. Let `Reasonix CLI` execute against explicit handoff contracts.
 
-```powershell
-.\scripts\ai-hand.ps1 "<task-slug>"
+### 🧭 Quick Navigation
+
+- [🚀 Overview](#en-overview)
+- [✨ Features](#en-features)
+- [🗂️ Project Structure](#en-structure)
+- [📦 Installation](#en-installation)
+- [🧭 Usage](#en-usage)
+- [🧩 Codex Skill / Plugin](#en-skill-plugin)
+- [💬 Example Prompt](#en-example)
+- [❓FAQ](#en-faq)
+- [📄 License](#en-license)
+
+<a id="en-overview"></a>
+### 🚀 Overview
+
+`Reasonix Orchestrator` is a reusable Codex Skill / Plugin for a workflow with fixed responsibilities:
+
+- `Codex Desktop` = `Brain / Judge / Orchestrator`
+- `Reasonix CLI` = `Hand / Executor`
+- Windows entrypoint = `.\scripts\ai-hand.ps1 "<task-slug>"`
+- macOS / Linux entrypoint = `./scripts/ai-hand.sh "<task-slug>"`
+
+It is designed for teams who want planning, confirmation, and review to stay inside `Codex Desktop`, while code execution is delegated to `Reasonix CLI` through explicit handoff files.
+
+<a id="en-features"></a>
+### ✨ Features
+
+- Clear Brain / Judge / Hand separation.
+- Reusable handoff documents such as `SPEC`, `ACCEPTANCE`, and `REASONIX_HANDOFF`.
+- Platform-specific fixed execution entrypoints.
+- Human confirmation remains inside `Codex Desktop`.
+- Skill packaging plus plugin metadata for reuse and distribution.
+- Built-in safety boundaries around risky operations.
+
+<a id="en-structure"></a>
+### 🗂️ Project Structure
+
+```text
+.
+├─ assets/
+├─ .codex-plugin/
+├─ skills/
+│  └─ reasonix-orchestrator/
+├─ LICENSE
+└─ README.md
 ```
+
+Main workflow entrypoints and references live under:
+
+- [skills/reasonix-orchestrator/SKILL.md](skills/reasonix-orchestrator/SKILL.md)
+- [.codex-plugin/plugin.json](.codex-plugin/plugin.json)
+
+<a id="en-installation"></a>
+### 📦 Installation
+
+Install the skill into your Codex skills directory:
 
 ```bash
-./scripts/ai-hand.sh "<task-slug>"
+mkdir -p ~/.codex/skills
+cp -R ./skills/reasonix-orchestrator ~/.codex/skills/reasonix-orchestrator
+chmod +x ~/.codex/skills/reasonix-orchestrator/scripts/ai-hand.sh
 ```
 
-* no normal use of `ai-chain.ps1`
-* no normal use of `codex` CLI for `Brain / Judge`
+On Windows, the target is typically:
 
-In short:
+```text
+.codex\skills\reasonix-orchestrator\
+```
 
-* the user talks to `Codex Desktop`
-* `Codex Desktop` plans and reviews
-* `Reasonix CLI` executes code changes from the generated handoff files
+If you use a custom `CODEX_HOME`, place it inside that `skills/` directory instead.
 
-For detailed documentation, see:
+<a id="en-usage"></a>
+### 🧭 Usage
 
-* [skills/reasonix-orchestrator/SKILL.md](skills/reasonix-orchestrator/SKILL.md)
-* [skills/reasonix-orchestrator/references/](skills/reasonix-orchestrator/references/)
+Typical execution flow:
+
+```text
+User request
+  → Codex Desktop plans
+  → SPEC / ACCEPTANCE / HANDOFF generated
+  → user confirms
+  → platform-specific ai-hand script runs
+  → Reasonix executes
+  → Codex Desktop reviews
+  → PASS / REVISE / REJECT
+```
+
+Key constraints:
+
+- `Codex Desktop` remains the normal `Brain / Judge`
+- `Reasonix CLI` remains the normal `Hand`
+- `ai-chain.ps1` is `legacy / fallback` only
+- `codex` CLI is not the normal Brain / Judge in this mode
+
+<a id="en-skill-plugin"></a>
+### 🧩 Codex Skill / Plugin
+
+This repository serves both as:
+
+- a reusable Skill
+- a Plugin-ready package with `.codex-plugin/plugin.json`
+
+Use it when you want Codex Desktop to own planning and review, while Reasonix only performs code changes defined by the generated contract files.
+
+<a id="en-example"></a>
+### 💬 Example Prompt
+
+```text
+Handle this in Codex Desktop Orchestrator mode.
+Task name: example-task
+
+Requirement: describe the task here.
+First generate SPEC / ACCEPTANCE / REASONIX_HANDOFF as Brain,
+show me the summary, then ask for confirmation before Reasonix executes.
+```
+
+<a id="en-faq"></a>
+### ❓FAQ
+
+#### 1. Do I need to know Reasonix deeply?
+
+No. Most users only need to know that `Reasonix CLI` performs the code changes, while `Codex Desktop` remains the main interaction surface.
+
+#### 2. Why not let Codex edit code directly?
+
+Because this workflow intentionally separates planning from execution. That makes review, rollback, and reuse easier.
+
+#### 3. Why keep SPEC / ACCEPTANCE / HANDOFF?
+
+They act as the explicit contract for scope, completion, editable areas, and protected areas.
+
+#### 4. Why is `ai-chain.ps1` not the default path?
+
+Because confirmation and Brain / Judge ownership must stay in `Codex Desktop`. `ai-chain.ps1` is therefore only `legacy / fallback`.
+
+<a id="en-license"></a>
+### 📄 License
+
+Licensed under the [MIT License](LICENSE).
