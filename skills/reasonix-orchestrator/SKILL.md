@@ -1,6 +1,6 @@
 ---
 name: reasonix-orchestrator
-description: Use when installing, updating, auditing, or packaging a repository workflow where Codex Desktop must stay the normal Brain and Judge, Reasonix CLI must stay the Hand, and the only normal execution entrypoint must be scripts/ai-hand.ps1. Trigger on requests about AGENTS.md, .ai/tasks, .ai/prompts, scripts/ai-hand.ps1, workflow extraction, or Codex plugin packaging for this orchestration pattern.
+description: Use when installing, updating, auditing, or packaging a repository workflow where Codex Desktop must stay the normal Brain and Judge, Reasonix CLI must stay the Hand, and the only normal execution entrypoint must be scripts/ai-hand.ps1 on Windows or scripts/ai-hand.sh on macOS/Linux. Trigger on requests about AGENTS.md, .ai/tasks, .ai/prompts, scripts/ai-hand.ps1, scripts/ai-hand.sh, workflow extraction, or Codex plugin packaging for this orchestration pattern.
 ---
 
 # Reasonix Orchestrator
@@ -13,7 +13,8 @@ Keep the normal control plane fixed:
 
 * Codex Desktop = normal Brain / Judge / Orchestrator
 * Reasonix CLI = Hand / executor
-* `.\scripts\ai-hand.ps1 "<task-slug>"` = only normal execution entrypoint
+* Windows entrypoint = `.\scripts\ai-hand.ps1 "<task-slug>"`
+* macOS / Linux entrypoint = `./scripts/ai-hand.sh "<task-slug>"`
 * `ai-chain.ps1` = legacy/fallback only
 * `codex` CLI = not used for Brain/Judge in Codex Desktop Orchestrator mode
 
@@ -25,7 +26,7 @@ Use this skill when the repo needs any of these:
 * extract current workflow into a reusable Codex skill
 * package the repo as a Codex plugin with `.codex-plugin/plugin.json`
 * audit whether Brain/Judge/Hand boundaries are still correct
-* document how `AGENTS.md`, `.ai/tasks`, `.ai/prompts`, and `scripts/ai-hand.ps1` fit together
+* document how `AGENTS.md`, `.ai/tasks`, `.ai/prompts`, `scripts/ai-hand.ps1`, and `scripts/ai-hand.sh` fit together
 
 Do not use this skill for normal business-feature implementation.
 
@@ -58,6 +59,7 @@ Read these files when they exist:
 * `.ai/prompts/reasonix-hand.md`
 * `.reasonix/system-hand.md`
 * `scripts/ai-hand.ps1`
+* `scripts/ai-hand.sh`
 
 Read these only as legacy/background if the repo still keeps them:
 
@@ -78,6 +80,7 @@ For longer guidance, load:
 Use bundled script:
 
 * [scripts/ai-hand.ps1](scripts/ai-hand.ps1)
+* [scripts/ai-hand.sh](scripts/ai-hand.sh)
 
 ## Safety Checks
 
@@ -85,7 +88,9 @@ Before claiming success, confirm all of these:
 
 * Codex Desktop is still documented as the only normal Brain and Judge.
 * Reasonix CLI is still documented as the Hand only.
-* `.\scripts\ai-hand.ps1 "<task-slug>"` is still the only normal execution entrypoint.
+* Windows is documented to use `.\scripts\ai-hand.ps1 "<task-slug>"`.
+* macOS / Linux is documented to use `./scripts/ai-hand.sh "<task-slug>"`.
+* Codex Desktop is documented to choose the matching script for the user's OS.
 * `ai-chain.ps1` is documented as legacy/fallback only.
 * `codex` CLI is documented as not used for Brain/Judge in Desktop Orchestrator mode.
 * user confirmations are documented as happening inside Codex Desktop
@@ -106,10 +111,16 @@ Run a PowerShell syntax check for the bundled hand script:
 $tokens = $null; $errors = $null; [void][System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path "skills/reasonix-orchestrator/scripts/ai-hand.ps1"), [ref]$tokens, [ref]$errors); if ($errors.Count -gt 0) { $errors | ForEach-Object { $_.ToString() }; exit 1 } else { Write-Host "PowerShell syntax OK" }
 ```
 
+Run a Bash syntax check for the macOS / Linux hand script:
+
+```bash
+bash -n skills/reasonix-orchestrator/scripts/ai-hand.sh
+```
+
 Optionally inspect workflow-only diff:
 
 ```powershell
-git diff -- AGENTS.md .ai/tasks/README.md .ai/prompts/reasonix-hand.md .reasonix/system-hand.md scripts/ai-hand.ps1 skills/reasonix-orchestrator .codex-plugin/plugin.json README.md
+git diff -- AGENTS.md .ai/tasks/README.md .ai/prompts/reasonix-hand.md .reasonix/system-hand.md scripts/ai-hand.ps1 scripts/ai-hand.sh skills/reasonix-orchestrator .codex-plugin/plugin.json README.md
 ```
 
 ## Common Mistakes

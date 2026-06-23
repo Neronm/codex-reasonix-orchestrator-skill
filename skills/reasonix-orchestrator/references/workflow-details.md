@@ -11,7 +11,8 @@ SPEC.md / ACCEPTANCE.md / REASONIX_HANDOFF.md
   ->
 User confirmation inside Codex Desktop
   ->
-.\scripts\ai-hand.ps1 "<task-slug>"
+Windows: .\scripts\ai-hand.ps1 "<task-slug>"
+macOS / Linux: ./scripts/ai-hand.sh "<task-slug>"
   ->
 Reasonix CLI Hand
   ->
@@ -74,3 +75,13 @@ These may exist in older repos, but are not normal control-plane components:
 * `scripts/ai-chain.ps1`
 
 Keep them marked as legacy or fallback when they remain in the repo.
+
+## Cross-Platform Rule
+
+In Desktop Orchestrator mode:
+
+* Windows installs and uses `ai-hand.ps1`
+* macOS / Linux installs and uses `ai-hand.sh`
+* Codex Desktop chooses the matching script for the user's system
+* `ai-chain.ps1` stays legacy/fallback only
+* `codex` CLI stays out of Brain / Judge

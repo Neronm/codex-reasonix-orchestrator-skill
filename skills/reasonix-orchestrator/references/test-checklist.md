@@ -11,6 +11,7 @@ Confirm these exist:
 * `.ai/prompts/reasonix-hand.md`
 * `.reasonix/system-hand.md`
 * `scripts/ai-hand.ps1`
+* `scripts/ai-hand.sh`
 * `skills/reasonix-orchestrator/SKILL.md`
 * `.codex-plugin/plugin.json`
 
@@ -38,6 +39,16 @@ Expect:
 
 * `PowerShell syntax OK`
 
+Run:
+
+```bash
+bash -n skills/reasonix-orchestrator/scripts/ai-hand.sh
+```
+
+Expect:
+
+* command exits successfully
+
 ## Workflow Smoke Test
 
 1. Ask Codex Desktop to process a fake task in Orchestrator mode.
@@ -46,10 +57,14 @@ Expect:
    * `.ai/tasks/<task-slug>/ACCEPTANCE.md`
    * `.ai/tasks/<task-slug>/REASONIX_HANDOFF.md`
 3. Confirm Codex Desktop asks for confirmation before calling Reasonix.
-4. Confirm the normal command is:
+4. Confirm the normal command matches the target OS:
 
 ```powershell
 .\scripts\ai-hand.ps1 "<task-slug>"
+```
+
+```bash
+./scripts/ai-hand.sh "<task-slug>"
 ```
 
 5. Confirm Reasonix writes:
@@ -69,3 +84,4 @@ Treat these as failures:
 * user asked to confirm inside Reasonix
 * user asked to manually copy `REASONIX_HANDOFF.md`
 * `EXECUTION_REPORT.md` missing after a claimed successful hand run
+* macOS / Linux flow documented without `chmod +x scripts/ai-hand.sh` on first use

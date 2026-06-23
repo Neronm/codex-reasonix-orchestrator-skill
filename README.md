@@ -11,6 +11,7 @@
 * `Codex Desktop` 负责规划、确认、验收
 * `Reasonix CLI` 负责按交接文件执行代码修改
 * 用户只需要在 `Codex Desktop` 里提需求和确认
+* Windows 用 `.\scripts\ai-hand.ps1 "<task-slug>"`，macOS / Linux 用 `./scripts/ai-hand.sh "<task-slug>"`
 
 **如果你是第一次接触这套流程，先记住这一句话：**
 
@@ -77,6 +78,13 @@
 4. 在 `Codex Desktop` 里让它安装这套 workflow
 5. 跑一次 smoke-test，确认流程能通
 
+macOS / Linux 用户可以直接这样安装 Skill：
+
+```bash
+mkdir -p ~/.codex/skills
+cp -R ./skills/reasonix-orchestrator ~/.codex/skills/reasonix-orchestrator
+```
+
 ### Skills 目录放哪里
 
 常见位置：
@@ -92,6 +100,12 @@ Windows 用户通常可以理解成自己用户目录下的：
 ```
 
 如果你使用了自定义 `CODEX_HOME`，那就放到对应的 `skills/` 目录里。
+
+macOS / Linux 目标项目首次使用前，记得给 hand 脚本执行权限：
+
+```bash
+chmod +x scripts/ai-hand.sh
+```
 
 ## 正常使用时，你只需要这样做
 
@@ -126,7 +140,7 @@ Codex Desktop 规划
  ↓
 你确认
  ↓
-Codex 调用 ai-hand.ps1
+Codex Desktop 根据系统选择 hand 脚本
  ↓
 Reasonix 执行
  ↓
@@ -139,14 +153,20 @@ PASS / REVISE / REJECT
 
 1. `Codex Desktop` 是正常的 `Brain / Judge / Orchestrator`
 2. `Reasonix CLI` 是正常的 `Hand / Executor`
-3. 正常入口只有：
+3. 正常入口按系统选择：
 
 ```powershell
 .\scripts\ai-hand.ps1 "<task-slug>"
 ```
 
-4. 不使用 `ai-chain.ps1` 作为正常入口
-5. 不使用 `codex` CLI 做 `Brain / Judge`
+```bash
+./scripts/ai-hand.sh "<task-slug>"
+```
+
+4. Windows 用户确认后，Codex Desktop 调用 `.\scripts\ai-hand.ps1 "<task-slug>"`
+5. macOS / Linux 用户确认后，Codex Desktop 调用 `./scripts/ai-hand.sh "<task-slug>"`
+6. 不使用 `ai-chain.ps1` 作为正常入口
+7. 不使用 `codex` CLI 做 `Brain / Judge`
 
 ## 安装到目标项目后，会多出什么
 
@@ -157,12 +177,13 @@ PASS / REVISE / REJECT
 * `.ai/prompts/reasonix-hand.md`
 * `.reasonix/system-hand.md`
 * `scripts/ai-hand.ps1`
+* `scripts/ai-hand.sh`
 
 它们的作用可以简单理解成：
 
 * `AGENTS.md` 负责讲清楚谁干什么
 * `SPEC / ACCEPTANCE / HANDOFF` 负责交接任务
-* `ai-hand.ps1` 负责调用 `Reasonix CLI`
+* `ai-hand.ps1` / `ai-hand.sh` 负责调用 `Reasonix CLI`
 * `EXECUTION_REPORT.md` 负责记录执行结果
 
 ## Smoke Test
@@ -178,10 +199,14 @@ PASS / REVISE / REJECT
    * `ACCEPTANCE.md`
    * `REASONIX_HANDOFF.md`
 4. 确认它先问你是否执行
-5. 确认执行时走的入口是：
+5. 确认执行时走的入口按系统选择：
 
 ```powershell
 .\scripts\ai-hand.ps1 "<task-slug>"
+```
+
+```bash
+./scripts/ai-hand.sh "<task-slug>"
 ```
 
 6. 确认 `Reasonix CLI` 执行后写出了：
@@ -306,10 +331,14 @@ Reasonix Orchestrator is a reusable Codex Skill / Plugin for teams who want:
 
 * `Codex Desktop` to act as the normal `Brain / Judge / Orchestrator`
 * `Reasonix CLI` to act as the normal `Hand / Executor`
-* a fixed execution entrypoint:
+* a fixed execution entrypoint chosen by platform:
 
 ```powershell
 .\scripts\ai-hand.ps1 "<task-slug>"
+```
+
+```bash
+./scripts/ai-hand.sh "<task-slug>"
 ```
 
 * no normal use of `ai-chain.ps1`

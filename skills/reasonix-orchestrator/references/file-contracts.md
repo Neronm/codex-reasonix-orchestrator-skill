@@ -8,7 +8,9 @@ Must define:
 
 * Codex Desktop as the only normal Brain and Judge
 * Reasonix CLI as Hand only
-* `.\scripts\ai-hand.ps1 "<task-slug>"` as the only normal execution entrypoint
+* `.\scripts\ai-hand.ps1 "<task-slug>"` as the Windows execution entrypoint
+* `./scripts/ai-hand.sh "<task-slug>"` as the macOS / Linux execution entrypoint
+* Codex Desktop selecting the matching script for the user's system
 * `ai-chain.ps1` as legacy/fallback only
 * no `codex` CLI for Brain/Judge
 * safety rules against destructive or secret-touching actions
@@ -40,6 +42,19 @@ Acts as the stable system-level contract for Reasonix Hand.
 Keep it aligned with `.ai/prompts/reasonix-hand.md`.
 
 ### `scripts/ai-hand.ps1`
+
+Must:
+
+* validate the task slug
+* load `SPEC.md`
+* load `ACCEPTANCE.md`
+* load `REASONIX_HANDOFF.md`
+* load `.ai/prompts/reasonix-hand.md`
+* load `.reasonix/system-hand.md`
+* call `reasonix`
+* require `EXECUTION_REPORT.md` to exist before success
+
+### `scripts/ai-hand.sh`
 
 Must:
 
