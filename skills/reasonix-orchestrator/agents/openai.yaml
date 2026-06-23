@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reasonix Orchestrator"
+  short_description: "Audit and package Codex Desktop plus Reasonix Hand workflow"
+  default_prompt: "Use $reasonix-orchestrator to install, audit, or package this Codex Desktop Orchestrator workflow."

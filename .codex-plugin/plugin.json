@@ -1,0 +1,26 @@
+{
+  "name": "reasonix-orchestrator",
+  "version": "0.1.0",
+  "description": "Codex Desktop Orchestrator workflow skill and plugin packaging for Reasonix Hand execution.",
+  "author": {
+    "name": "Repository maintainers"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Reasonix Orchestrator",
+    "shortDescription": "Codex Desktop Brain/Judge plus Reasonix Hand workflow.",
+    "longDescription": "Adds a reusable Codex Desktop Orchestrator workflow where Codex Desktop acts as Brain and Judge while Reasonix CLI executes code changes as Hand through scripts/ai-hand.ps1.",
+    "developerName": "Repository maintainers",
+    "category": "Productivity",
+    "capabilities": [
+      "Write",
+      "Workflow"
+    ],
+    "defaultPrompt": [
+      "Use $reasonix-orchestrator to install this workflow into the repo.",
+      "Use $reasonix-orchestrator to audit AGENTS.md and ai-hand.ps1.",
+      "Use $reasonix-orchestrator to package this repo as a reusable workflow skill."
+    ]
+  }
+}
