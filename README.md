@@ -1,4 +1,4 @@
-# Reasonix Orchestrator
+# 🧠 Reasonix Orchestrator
 
 这是一个给 `Codex Desktop + Reasonix CLI` 工作流准备的可复用 Skill / Plugin。
 
@@ -17,11 +17,11 @@
 
 用户只在 Codex Desktop 里提需求和确认；Codex 负责规划和验收；Reasonix 只负责按 Codex 的交接文件执行代码修改。
 
-## 它到底是怎么分工的
+## 🧩 它到底是怎么分工的
 
 你可以把它想成两个人配合干活：
 
-### Codex Desktop
+### 🖥️ Codex Desktop
 
 它是：
 
@@ -38,7 +38,7 @@
 * 在执行后检查结果
 * 给出最终判断
 
-### Reasonix CLI
+### 🤖 Reasonix CLI
 
 它是：
 
@@ -52,7 +52,7 @@
 * 运行需要的验证
 * 写出执行报告
 
-## 这套流程最适合谁
+## 👥 这套流程最适合谁
 
 如果你符合下面这些情况，这个项目就很适合你：
 
@@ -66,7 +66,7 @@
 
 如果你更想要的是“不经过交接文件、不经过确认、让同一个 AI 自己一路直接改到尾”，那这套模式可能不适合你。
 
-## 3 分钟快速开始
+## 🚀 3 分钟快速开始
 
 如果你想先跑通一遍，按下面做就可以。
 
@@ -85,7 +85,7 @@ mkdir -p ~/.codex/skills
 cp -R ./skills/reasonix-orchestrator ~/.codex/skills/reasonix-orchestrator
 ```
 
-### Skills 目录放哪里
+### 📁 Skills 目录放哪里
 
 常见位置：
 
@@ -107,7 +107,7 @@ macOS / Linux 目标项目首次使用前，记得给 hand 脚本执行权限：
 chmod +x scripts/ai-hand.sh
 ```
 
-## 正常使用时，你只需要这样做
+## 🛠️ 正常使用时，你只需要这样做
 
 打开 `Codex Desktop`，直接发这样的请求：
 
@@ -129,7 +129,7 @@ chmod +x scripts/ai-hand.sh
 
 但对大多数人来说，上面那段模板已经够用了。
 
-## 整个流程是怎么跑的
+## 🔁 整个流程是怎么跑的
 
 ```text
 你
@@ -168,7 +168,7 @@ PASS / REVISE / REJECT
 6. 不使用 `ai-chain.ps1` 作为正常入口
 7. 不使用 `codex` CLI 做 `Brain / Judge`
 
-## 安装到目标项目后，会多出什么
+## 📦 安装到目标项目后，会多出什么
 
 这套 workflow 安装到目标项目后，通常会加入这些文件：
 
@@ -186,7 +186,7 @@ PASS / REVISE / REJECT
 * `ai-hand.ps1` / `ai-hand.sh` 负责调用 `Reasonix CLI`
 * `EXECUTION_REPORT.md` 负责记录执行结果
 
-## Smoke Test
+## 🧪 Smoke Test
 
 第一次装好以后，建议先用一个很小的测试任务试跑，不要直接拿重要需求上来就跑。
 
@@ -227,7 +227,7 @@ PASS / REVISE / REJECT
 
 * [skills/reasonix-orchestrator/references/test-checklist.md](skills/reasonix-orchestrator/references/test-checklist.md)
 
-## 安全边界
+## 🔒 安全边界
 
 这套工作流默认不会自动做下面这些危险操作：
 
@@ -248,15 +248,15 @@ PASS / REVISE / REJECT
 * 偷偷去碰配置和凭据
 * 绕过你，直接让 `Reasonix` 自己决定怎么做
 
-## FAQ
+## ❓ FAQ
 
-### 我需要会 Reasonix 吗？
+### 🧑‍🏫 我需要会 Reasonix 吗？
 
 不需要很熟。
 
 普通用户只要知道一件事：真正改代码的是 `Reasonix CLI`，但你主要打交道的还是 `Codex Desktop`。
 
-### 为什么不直接让 Codex 改代码？
+### 🧠 为什么不直接让 Codex 改代码？
 
 因为很多人更希望把“想清楚怎么做”和“真的去动代码”拆开。
 
@@ -267,7 +267,7 @@ PASS / REVISE / REJECT
 * 过程更容易检查
 * 出问题更容易回滚和重跑
 
-### 为什么要保留 SPEC / ACCEPTANCE / HANDOFF？
+### 📄 为什么要保留 SPEC / ACCEPTANCE / HANDOFF？
 
 因为它们就是交接合同。
 
@@ -280,7 +280,7 @@ PASS / REVISE / REJECT
 
 这比“全靠聊天上下文记忆”稳得多。
 
-### 为什么不使用 ai-chain.ps1？
+### ↩️ 为什么不使用 ai-chain.ps1？
 
 因为这套模式强调：
 
@@ -289,7 +289,7 @@ PASS / REVISE / REJECT
 
 `ai-chain.ps1` 可以保留，但它不是这套工作流的正常入口，只是 `legacy / fallback`。
 
-### Reasonix 改错了怎么办？
+### 🩹 Reasonix 改错了怎么办？
 
 这正是为什么最后还要让 `Codex Desktop` 来审查。
 
@@ -299,7 +299,7 @@ PASS / REVISE / REJECT
 * 收紧 `SPEC / ACCEPTANCE / HANDOFF`
 * 再决定是否重新执行
 
-### 这个 Skill 会不会自动提交或推送代码？
+### 🚫 这个 Skill 会不会自动提交或推送代码？
 
 不会。
 
@@ -312,7 +312,7 @@ PASS / REVISE / REJECT
 
 这些都被当成危险操作处理。
 
-## 给准备继续维护这套 Skill 的人看的入口
+## 🧑‍💻 给准备继续维护这套 Skill 的人看的入口
 
 如果你要维护或扩展这套 Skill，可以从这里继续往下看：
 
@@ -325,7 +325,7 @@ PASS / REVISE / REJECT
 
 ---
 
-## English
+## 🌍 English
 
 Reasonix Orchestrator is a reusable Codex Skill / Plugin for teams who want:
 
