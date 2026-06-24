@@ -1,28 +1,76 @@
-# Reasonix Orchestrator
+<p align="center">
+  <img src="assets/reasonix-mascot.jpg" alt="Reasonix Orchestrator Mascot" width="320" />
+</p>
 
-Reusable skill/package for a fixed `Codex Desktop + Reasonix CLI` workflow.
+<h1 align="center">Reasonix Orchestrator</h1>
 
-- `Codex Desktop` = normal `Brain / Judge / Orchestrator`
-- `Reasonix CLI` = normal `Hand / Executor`
-- Windows entrypoint = `.\scripts\ai-hand.ps1 "<task-slug>"`
-- macOS / Linux entrypoint = `./scripts/ai-hand.sh "<task-slug>"`
-- `ai-chain.ps1` = legacy/fallback only
-- `codex` CLI = not used for Brain/Judge in Desktop Orchestrator mode
+<p align="center">
+  面向 <code>Codex Desktop + Reasonix CLI</code> 的可复用工作流 skill/package。
+</p>
+
+<p align="center">
+  <a href="#zh-cn">简体中文</a> |
+  <a href="#en">English</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Codex-Desktop-1f6feb?style=for-the-badge" alt="Codex Desktop" />
+  <img src="https://img.shields.io/badge/Reasonix-CLI-0f766e?style=for-the-badge" alt="Reasonix CLI" />
+  <img src="https://img.shields.io/badge/Skill-Package-f59e0b?style=for-the-badge" alt="Skill Package" />
+  <img src="https://img.shields.io/badge/CI-Validation-7c3aed?style=for-the-badge" alt="CI Validation" />
+</p>
+
+<p align="center">
+  <code>Codex Desktop</code> = normal <code>Brain / Judge / Orchestrator</code><br />
+  <code>Reasonix CLI</code> = normal <code>Hand / Executor</code>
+</p>
 
 ---
 
-## 中文
+<a id="zh-cn"></a>
 
-### 概览
+## 简体中文
 
-这个仓库把一套固定职责边界的协作方式打包成可复用 skill/package：
+### 快速导航
+
+- [项目简介](#zh-overview)
+- [功能特点](#zh-features)
+- [仓库结构](#zh-structure)
+- [安装方式](#zh-installation)
+- [验证方式](#zh-validation)
+- [使用方法](#zh-usage)
+- [安全边界](#zh-safety)
+- [附加说明](#zh-notes)
+- [常见问题](#zh-faq)
+
+<a id="zh-overview"></a>
+
+### 项目简介
+
+`Reasonix Orchestrator` 把一套固定职责边界的协作方式整理为可复用 skill/package：
 
 - `Codex Desktop` 负责规划、确认、验收
 - `Reasonix CLI` 负责按交接合同执行
 - Windows 正常入口：`.\scripts\ai-hand.ps1 "<task-slug>"`
 - macOS / Linux 正常入口：`./scripts/ai-hand.sh "<task-slug>"`
+- `ai-chain.ps1` 仅 `legacy/fallback`
+- Desktop Orchestrator 模式不用 `codex` CLI 承担 Brain/Judge，`codex` CLI is not used for Brain/Judge
 
-这不是业务仓库安装器。它整改和分发的是 **skill/package 本身**，让仓库具备本地验证、CI 验证、文档一致性检查。
+这个仓库不是业务仓库安装器。它整改和分发的是 **skill/package 本身**，目标是把本地验证、CI 验证、文档一致性检查做成一条证据闭环。
+
+<a id="zh-features"></a>
+
+### 功能特点
+
+- 固定 `Codex Desktop` 与 `Reasonix CLI` 的 Brain/Judge/Hand 边界
+- 提供 repo 内统一验证入口：
+  - `.\scripts\validate-skill.ps1`
+  - `./scripts/validate-skill.sh`
+- 自动检查 skill frontmatter、脚本语法、manifest 字段、文档契约漂移
+- 用 GitHub Actions 同时覆盖 `windows-latest` 与 `ubuntu-latest`
+- 保留 `SPEC.md`、`ACCEPTANCE.md`、`REASONIX_HANDOFF.md`、`EXECUTION_REPORT.md` 这类可审查交接产物
+
+<a id="zh-structure"></a>
 
 ### 仓库结构
 
@@ -43,7 +91,9 @@ Reusable skill/package for a fixed `Codex Desktop + Reasonix CLI` workflow.
 └── README.md
 ```
 
-### 安装
+<a id="zh-installation"></a>
+
+### 安装方式
 
 把 `skills/reasonix-orchestrator/` 复制到 Codex 的 `skills/` 目录。
 
@@ -63,7 +113,9 @@ Windows：
 
 如果你使用自定义 `CODEX_HOME`，改为对应的 `skills/` 目录即可。
 
-### 验证
+<a id="zh-validation"></a>
+
+### 验证方式
 
 本仓库唯一事实来源是统一验证脚本。
 
@@ -85,22 +137,24 @@ macOS / Linux：
 python scripts/validate_skill.py --repo-root .
 ```
 
-验证目标：
+验证覆盖：
 
 - skill frontmatter 合法
 - `ai-hand.ps1` PowerShell 语法合法
 - `ai-hand.sh` Bash 语法合法
 - `.codex-plugin/plugin.json` 必填字段完整
-- `README.md`、`SKILL.md`、`references/*`、`plugin.json` 关键契约无漂移
+- `README.md`、`SKILL.md`、`references/*`、`plugin.json` 关键契约零漂移
 - 文档无占位符路径、无过时入口
 
 Windows 说明：
 
 - 本地以 `.\scripts\validate-skill.ps1` 为准
-- 如果本机没有可用 Bash，本地验证可以跳过 Bash 语法检查
+- 如果本机没有可用 Bash，本地可以跳过 Bash 语法检查
 - Ubuntu CI 仍必须运行 `./scripts/validate-skill.sh`
 
-### 使用
+<a id="zh-usage"></a>
+
+### 使用方法
 
 典型流程：
 
@@ -121,8 +175,10 @@ User
 
 - `Codex Desktop` 保持正常 `Brain / Judge`
 - `Reasonix CLI` 保持正常 `Hand`
-- `ai-chain.ps1` 仅 legacy/fallback
+- `ai-chain.ps1` 仅 `legacy/fallback`
 - Desktop Orchestrator 模式不用 `codex` CLI 承担 Brain/Judge
+
+<a id="zh-safety"></a>
 
 ### 安全边界
 
@@ -139,57 +195,48 @@ User
 
 也不要求用户手动复制 `REASONIX_HANDOFF.md`。
 
-### agents/openai.yaml
+<a id="zh-notes"></a>
 
-`skills/reasonix-orchestrator/agents/openai.yaml` 是可选 agent metadata。它给支持该约定的工具提供显示名、简短描述、默认 prompt 文案；它不改变 `SKILL.md` 的主契约，也不替代统一验证脚本。
+### 附加说明
 
-### FAQ
+`skills/reasonix-orchestrator/agents/openai.yaml` 是可选 agent metadata。它为支持该约定的工具提供显示名、简短描述、默认 prompt 文案；它不改变 `SKILL.md` 的主契约，也不替代统一验证脚本。
 
-**Q: 为什么不直接让 Codex 改代码？**  
-A: 这个模式刻意把规划/验收和执行拆开。`Codex Desktop` 保留 Brain/Judge，`Reasonix CLI` 只做 Hand。
+<a id="zh-faq"></a>
 
-**Q: 为什么保留 `SPEC.md` / `ACCEPTANCE.md` / `REASONIX_HANDOFF.md`？**  
-A: 它们是显式交接合同，定义范围、完成标准、可改区域、受保护区域。
+### 常见问题
 
-**Q: 这个仓库会自动接入目标业务仓库吗？**  
-A: 不会。本仓库只验证和分发 skill/package 自身。
+#### 为什么不直接让 Codex 改代码？
+
+因为这个模式刻意把规划、验收和执行拆开。`Codex Desktop` 保留 Brain/Judge，`Reasonix CLI` 只做 Hand。
+
+#### 为什么保留 `SPEC.md` / `ACCEPTANCE.md` / `REASONIX_HANDOFF.md`？
+
+因为这些文件是显式交接合同，用来定义范围、完成标准、可改区域和受保护区域。
+
+#### 这个仓库会自动接入目标业务仓库吗？
+
+不会。本仓库只验证和分发 skill/package 自身。
 
 ---
+
+<a id="en"></a>
 
 ## English
 
 ### Overview
 
-This repository packages a fixed-responsibility workflow:
+`Reasonix Orchestrator` packages a fixed-responsibility workflow:
 
 - `Codex Desktop` handles planning, confirmation, and acceptance review
 - `Reasonix CLI` handles execution against explicit handoff artifacts
 - Windows entrypoint: `.\scripts\ai-hand.ps1 "<task-slug>"`
 - macOS / Linux entrypoint: `./scripts/ai-hand.sh "<task-slug>"`
+- `ai-chain.ps1` remains `legacy/fallback`
+- Desktop Orchestrator mode does not use `codex` CLI for Brain/Judge; `codex` CLI is not used for Brain/Judge
 
 This repository does not act as a target-repo installer. It hardens the **skill/package itself** with local validation, CI validation, and contract-drift checks.
 
-### Install
-
-Copy `skills/reasonix-orchestrator/` into Codex's `skills/` directory.
-
-macOS / Linux:
-
-```bash
-mkdir -p ~/.codex/skills
-cp -R ./skills/reasonix-orchestrator ~/.codex/skills/reasonix-orchestrator
-chmod +x ~/.codex/skills/reasonix-orchestrator/scripts/ai-hand.sh
-```
-
-Windows:
-
-```text
-%USERPROFILE%\.codex\skills\reasonix-orchestrator\
-```
-
-If you use a custom `CODEX_HOME`, place it under that `skills/` directory instead.
-
-### Validate
+### Validation
 
 Use the repository validation entrypoints as the single source of truth.
 
@@ -234,13 +281,6 @@ User
   -> Codex Desktop Judge
   -> PASS / REVISE / REJECT
 ```
-
-Key boundaries:
-
-- `Codex Desktop` remains the normal `Brain / Judge`
-- `Reasonix CLI` remains the normal `Hand`
-- `ai-chain.ps1` remains legacy/fallback only
-- Desktop Orchestrator mode does not use `codex` CLI for Brain/Judge
 
 ### Safety Boundaries
 
