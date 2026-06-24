@@ -2,10 +2,10 @@
   <img src="assets/reasonix-mascot.jpg" alt="Reasonix Mascot" width="320" />
 </p>
 
-<h1 align="center">Reasonix Orchestrator</h1>
+<h1 align="center">Codex Reasonix Orchestrator</h1>
 
 <p align="center">
-  面向 <code>Codex Desktop + Reasonix CLI</code> 的可复用编排工作流
+  Codex Desktop 负责规划与验收，Reasonix CLI 负责执行。
 </p>
 
 <p align="center">
@@ -47,7 +47,7 @@
 
 ## 📌 项目简介
 
-`Reasonix Orchestrator` 用来固化一套职责清晰、边界明确、可审查复用的协作方式：
+`Codex Reasonix Orchestrator` 用来固化一套职责清晰、边界明确、可审查复用的协作方式：
 
 - `Codex Desktop` 负责规划、确认、验收
 - `Reasonix CLI` 负责按交接合同执行
@@ -312,7 +312,7 @@ Keep planning, confirmation, and review inside `Codex Desktop`. Let `Reasonix CL
 
 ## 📌 Overview
 
-`Reasonix Orchestrator` is a reusable Codex Skill / Plugin for a workflow with fixed responsibilities:
+`Codex Reasonix Orchestrator` is a reusable Codex Skill / Plugin for a workflow with fixed responsibilities:
 
 - `Codex Desktop = Brain / Judge / Orchestrator`
 - `Reasonix CLI = Hand / Executor`
