@@ -99,23 +99,45 @@ Before claiming success, confirm all of these:
 
 ## Validation Commands
 
-Run the skill validator:
+Use the repository validation entrypoints first:
 
 ```powershell
-python -X utf8 <path-to-skill-creator>/quick_validate.py skills/reasonix-orchestrator
+.\scripts\validate-skill.ps1
 ```
 
-Run a PowerShell syntax check for the bundled hand script:
+```bash
+./scripts/validate-skill.sh
+```
+
+The unified validator calls the bundled repository-local skill validator internally:
+
+```powershell
+python scripts/validate_skill.py --repo-root .
+```
+
+If you need the direct skill-frontmatter check only, run:
+
+```powershell
+python scripts/skill_validator.py skills/reasonix-orchestrator
+```
+
+The PowerShell validation includes a syntax check for the bundled hand script:
 
 ```powershell
 $tokens = $null; $errors = $null; [void][System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path "skills/reasonix-orchestrator/scripts/ai-hand.ps1"), [ref]$tokens, [ref]$errors); if ($errors.Count -gt 0) { $errors | ForEach-Object { $_.ToString() }; exit 1 } else { Write-Host "PowerShell syntax OK" }
 ```
 
-Run a Bash syntax check for the macOS / Linux hand script:
+The Bash validation includes a syntax check for the macOS / Linux hand script:
 
 ```bash
 bash -n skills/reasonix-orchestrator/scripts/ai-hand.sh
 ```
+
+Windows note:
+
+* `.\scripts\validate-skill.ps1` is the normal local validator on Windows.
+* If the machine has no working Bash environment, local Windows validation may skip the Bash syntax check.
+* Ubuntu CI must still run `./scripts/validate-skill.sh`, so Bash syntax remains a required release gate.
 
 Optionally inspect workflow-only diff:
 
@@ -130,3 +152,4 @@ git diff -- AGENTS.md .ai/tasks/README.md .ai/prompts/reasonix-hand.md .reasonix
 * Forgetting `.reasonix/system-hand.md` in the dependency chain.
 * Mixing business-code changes into workflow extraction.
 * Writing plugin docs that assume an exact Codex install command when the repo does not yet know the target distribution path. Mark `TODO` instead of guessing.
+* Updating README before the repository validator and CI are green. Wrong order.

@@ -1,0 +1,42 @@
+name: Validate Skill Package
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-windows:
+    name: Validate on Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run validation
+        shell: pwsh
+        run: ./scripts/validate-skill.ps1
+
+  validate-ubuntu:
+    name: Validate on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Mark scripts executable
+        run: |
+          chmod +x scripts/validate-skill.sh
+          chmod +x skills/reasonix-orchestrator/scripts/ai-hand.sh
+
+      - name: Run validation
+        run: ./scripts/validate-skill.sh

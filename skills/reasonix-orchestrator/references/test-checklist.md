@@ -1,11 +1,45 @@
-# Minimal Test Checklist
+# Validation Checklist
 
-Use this after someone installs the skill into another repo.
+Use this to verify the skill/package repository itself before release.
 
-## Repository Layout
+## Automated Package Validation
+
+Run the repository validation entrypoints:
+
+```powershell
+.\scripts\validate-skill.ps1
+```
+
+```bash
+./scripts/validate-skill.sh
+```
+
+The raw Python entrypoint is:
+
+```powershell
+python scripts/validate_skill.py --repo-root .
+```
+
+On Windows without a working Bash environment, use `.\scripts\validate-skill.ps1` locally and let Ubuntu CI cover the Bash syntax gate.
+
+Expect:
+
+* every check prints `PASS: <check-name>`
+* exit code `0`
+* no placeholder validator path like `<path-to-skill-creator>`
+* exact entrypoints remain:
+  * `.\scripts\ai-hand.ps1 "<task-slug>"`
+  * `./scripts/ai-hand.sh "<task-slug>"`
+
+## Required Repository Files
 
 Confirm these exist:
 
+* `scripts/skill_validator.py`
+* `scripts/validate_skill.py`
+* `scripts/validate-skill.ps1`
+* `scripts/validate-skill.sh`
+* `.github/workflows/validate-skill.yml`
 * `AGENTS.md`
 * `.ai/tasks/README.md`
 * `.ai/prompts/reasonix-hand.md`
@@ -15,43 +49,11 @@ Confirm these exist:
 * `skills/reasonix-orchestrator/SKILL.md`
 * `.codex-plugin/plugin.json`
 
-## Skill Validation
+## Manual Smoke Test For Target Repos
 
-Run:
+Run this only when you are validating a real target repository that installed the skill.
 
-```powershell
-python -X utf8 <path-to-skill-creator>/quick_validate.py skills/reasonix-orchestrator
-```
-
-Expect:
-
-* validator exits successfully
-
-## Bundled Script Validation
-
-Run:
-
-```powershell
-$tokens = $null; $errors = $null; [void][System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path "skills/reasonix-orchestrator/scripts/ai-hand.ps1"), [ref]$tokens, [ref]$errors); if ($errors.Count -gt 0) { $errors | ForEach-Object { $_.ToString() }; exit 1 } else { Write-Host "PowerShell syntax OK" }
-```
-
-Expect:
-
-* `PowerShell syntax OK`
-
-Run:
-
-```bash
-bash -n skills/reasonix-orchestrator/scripts/ai-hand.sh
-```
-
-Expect:
-
-* command exits successfully
-
-## Workflow Smoke Test
-
-1. Ask Codex Desktop to process a fake task in Orchestrator mode.
+1. Ask Codex Desktop to process a fake task in Desktop Orchestrator mode.
 2. Confirm Codex Desktop creates:
    * `.ai/tasks/<task-slug>/SPEC.md`
    * `.ai/tasks/<task-slug>/ACCEPTANCE.md`
@@ -85,3 +87,4 @@ Treat these as failures:
 * user asked to manually copy `REASONIX_HANDOFF.md`
 * `EXECUTION_REPORT.md` missing after a claimed successful hand run
 * macOS / Linux flow documented without `chmod +x scripts/ai-hand.sh` on first use
+* docs missing any of: `git push`, `git commit`, `git reset --hard`, `git clean`, or "install dependencies without explicit approval"
